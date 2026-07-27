@@ -10,4 +10,4 @@ pluginManagement {
 }
 
 // Should match your modid
-rootProject.name = 'dragon-block-infinity'
+rootProject.name = 'Dragon Block Infinity'

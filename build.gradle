@@ -18,7 +18,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"dragon-block-infinity" {
+		"Dragon Block Infinity" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -48,6 +48,10 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": version
 	}
+}
+
+tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+	archiveBaseName.set("Dragon Block Infinity")
 }
 
 tasks.withType(JavaCompile).configureEach {
