@@ -1,3 +1,4 @@
+
 package net.dragonblockinfinity.client.models;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -87,10 +88,14 @@ public class HairModel extends HumanoidModel<AbstractClientPlayer> {
       Vector2f uv = faceVertex.uvIndex >= 0 ? this.objMesh.uvs.get(faceVertex.uvIndex) : new Vector2f(0.0F, 0.0F);
       Vector3f normal = faceVertex.normalIndex >= 0 ? this.objMesh.normals.get(faceVertex.normalIndex) : new Vector3f(0.0F, 1.0F, 0.0F);
 
+      // Antes: .setUv2(packedLight, packedOverlay) — setUv2 espera (blockLight, skyLight)
+      // separados, entao passar packedOverlay ali corrompia a luz e o overlay nunca era
+      // definido. setOverlay/setLight sao as versoes que ja fazem esse split sozinhas.
       buffer.addVertex(position.x, position.y, position.z)
          .setColor(this.red, this.green, this.blue, this.alpha)
          .setUv(uv.x, uv.y)
-         .setUv2(packedLight, packedOverlay)
+         .setOverlay(packedOverlay)
+         .setLight(packedLight)
          .setNormal(normal.x, normal.y, normal.z);
    }
 
@@ -110,7 +115,7 @@ public class HairModel extends HumanoidModel<AbstractClientPlayer> {
                continue;
             }
 
-            String[] tokens = trimmed.split("\\s+");
+            String[] tokens = trimmed.split("\s+");
             switch (tokens[0]) {
                case "v" -> mesh.vertices.add(new Vector3f(
                   Float.parseFloat(tokens[1]),
@@ -157,7 +162,11 @@ public class HairModel extends HumanoidModel<AbstractClientPlayer> {
    }
 
    public void copyPropertiesTo(PlayerModel<AbstractClientPlayer> playermodel) {
-      super.copyPropertiesTo(playermodel);
+      // Antes: super.copyPropertiesTo(playermodel) copiava as propriedades DESTE
+      // HairModel (recem-criado, sempre no estado padrao) PARA o playermodel
+      // compartilhado — na direcao errada. O certo e o playermodel (que ja esta
+      // com a pose atual do jogador) empurrar o estado dele para o HairModel.
+      playermodel.copyPropertiesTo(this);
       this.head.copyFrom(playermodel.head);
       this.hat.copyFrom(playermodel.hat);
       this.body.copyFrom(playermodel.body);

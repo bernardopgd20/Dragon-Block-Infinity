@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DragonBlockInfinity implements ModInitializer {
-	public static final String MOD_ID = "dragon-block-infinity";
+	public static final String MOD_ID = "dragonblockinfinity";
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
