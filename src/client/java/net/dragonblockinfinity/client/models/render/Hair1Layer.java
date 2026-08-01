@@ -1,8 +1,7 @@
-package net.dragonblockinfinity.client.render;
+package net.dragonblockinfinity.client.models.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.dragonblockinfinity.client.models.hair.Hair1Mesh;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -38,12 +37,38 @@ import org.joml.Matrix4f;
  * esta classe pode ser revista para delegar a um AnimationProcessor
  * do GeckoLib.
  */
-public class Hair1Layer extends RenderLayer<AbstractClientPlayer, PlayerModel> {
+public class Hair1Layer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
 
+    // Placeholder temporario: aura.png (textura branca lisa, ja existente no
+    // projeto) ate existir uma textura dedicada de cabelo. Facil de trocar
+    // depois — so mudar o caminho abaixo quando textures/hair/hair_1.png
+    // for criado.
     private static final ResourceLocation HAIR_TEXTURE =
-        ResourceLocation.fromNamespaceAndPath("dragonblockinfinity", "textures/hair/hair_1.png");
+        ResourceLocation.fromNamespaceAndPath("dragonblockinfinity", "textures/aura.png");
 
-    public Hair1Layer(RenderLayerParent<AbstractClientPlayer, PlayerModel> renderer) {
+    // ---------------------------------------------------------------
+    // Ajustes de tamanho/posicao do cabelo. O mesh original (Hair.obj)
+    // veio em unidades brutas do Blockbench (bounding box de ate ~4
+    // unidades de largura), bem maior que a cabeca do jogador (8x8x8
+    // pixels = 0.5 unidades de Minecraft), entao precisa ser escalado
+    // pra baixo. Editar estes 4 valores e re-buildar e o jeito mais
+    // simples de ajustar visualmente ate ficar do tamanho/posicao
+    // certos — sem precisar de config externa nem comandos no jogo.
+    // ---------------------------------------------------------------
+
+    /** Fator de escala aplicado ao mesh inteiro (1.0 = tamanho bruto do .obj). */
+    private static final float HAIR_SCALE = 0.125f; // 1/8, ponto de partida
+
+    /** Deslocamento adicional em X (unidades de Minecraft) apos a escala. */
+    private static final float OFFSET_X = 0.0f;
+
+    /** Deslocamento adicional em Y (unidades de Minecraft) apos a escala. */
+    private static final float OFFSET_Y = 0.0f;
+
+    /** Deslocamento adicional em Z (unidades de Minecraft) apos a escala. */
+    private static final float OFFSET_Z = 0.0f;
+
+    public Hair1Layer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer) {
         super(renderer);
     }
 
@@ -71,6 +96,11 @@ public class Hair1Layer extends RenderLayer<AbstractClientPlayer, PlayerModel> {
         // rotacao) que o ModelPart "head" do PlayerModel usa, para que o
         // cabelo acompanhe o movimento/rotacao da cabeca corretamente.
         getParentModel().getHead().translateAndRotate(poseStack);
+
+        // Reduz o mesh (que veio em unidades brutas do Blockbench, bem maior
+        // que a cabeca) e aplica qualquer offset manual de ajuste fino.
+        poseStack.scale(HAIR_SCALE, HAIR_SCALE, HAIR_SCALE);
+        poseStack.translate(OFFSET_X, OFFSET_Y, OFFSET_Z);
 
         PoseStack.Pose pose = poseStack.last();
         Matrix4f positionMatrix = pose.pose();

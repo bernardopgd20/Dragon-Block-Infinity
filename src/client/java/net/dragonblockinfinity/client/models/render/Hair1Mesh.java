@@ -1,4 +1,4 @@
-package net.dragonblockinfinity.client.models.hair;
+package net.dragonblockinfinity.client.models.render;
 
 import java.util.Base64;
 import java.nio.ByteBuffer;

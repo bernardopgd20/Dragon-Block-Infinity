@@ -1,14 +1,15 @@
 {
-	"required": true,
-	"package": "net.dragonblockinfinity.client.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ExampleClientMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+"required": true,
+"package": "net.dragonblockinfinity.client.mixin",
+"compatibilityLevel": "JAVA_21",
+"client": [
+"ExampleClientMixin",
+"Hair1LayerMixin"
+],
+"injectors": {
+"defaultRequire": 1
+},
+"overwrites": {
+"requireAnnotations": true
+}
 }

@@ -1,7 +1,7 @@
 package net.dragonblockinfinity.client;
 
 import net.dragonblockinfinity.client.gui.CaracterScreen;
-import net.dragonblockinfinity.client.models.render.HairRender;
+import net.dragonblockinfinity.client.models.render.Hair1Layer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -28,11 +28,11 @@ public class DragonBlockInfinityClient implements ClientModInitializer {
             }
         });
 
-        // Isto faltava: sem isso o HairRender existia mas nunca era anexado
-        // ao PlayerRenderer, entao o cabelo nunca aparecia no jogador in-game.
+        // Anexa o Hair1Layer ao PlayerRenderer (todas as variantes: default/slim).
+        // Sem isso o layer existe mas nunca e chamado, e o cabelo nao aparece.
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
             if (entityRenderer instanceof PlayerRenderer playerRenderer) {
-                registrationHelper.register(new HairRender(playerRenderer));
+                registrationHelper.register(new Hair1Layer(playerRenderer));
             }
         });
     }

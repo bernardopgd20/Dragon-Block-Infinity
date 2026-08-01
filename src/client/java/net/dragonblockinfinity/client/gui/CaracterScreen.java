@@ -1,5 +1,6 @@
 package net.dragonblockinfinity.client.gui;
 
+import net.dragonblockinfinity.client.customization.CharacterSelectionState;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -32,10 +33,18 @@ public class CaracterScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        // 1. Fundo/blur primeiro (padrao vanilla) — antes isso vinha depois
+        // do blit do painel, entao o blur desenhava por cima do menu inteiro
+        // deixando o GUI com aparencia "embacada".
+        this.renderBackground(graphics, mouseX, mouseY, delta);
+
         menuX = (this.width - WIDTH) / 2;
         menuY = (this.height - HEIGHT) / 2;
 
+        // 2. Painel do menu por cima do fundo.
         graphics.blit(MENU, menuX, menuY, 0, 0, WIDTH, HEIGHT);
+
+        // 3. Widgets (por cima do painel).
         super.render(graphics, mouseX, mouseY, delta);
 
         int leftButtonX = menuX + 20;
@@ -52,6 +61,12 @@ public class CaracterScreen extends Screen {
             rightArrowPressed ? RIGHT_BUTTON_PRESSED_U : RIGHT_BUTTON_U,
             rightArrowPressed ? RIGHT_BUTTON_PRESSED_V : RIGHT_BUTTON_V,
             BUTTON_SIZE, BUTTON_SIZE, 10, 10);
+
+        // Nome da raca atualmente selecionada, centralizado entre as duas setas.
+        String raceName = CharacterSelectionState.getSelectedRace().getDisplayName();
+        int textCenterX = (leftButtonX + BUTTON_SIZE + rightButtonX) / 2;
+        int textY = leftButtonY + 1;
+        graphics.drawCenteredString(this.font, raceName, textCenterX, textY, 0xFFFFFF);
     }
 
     @Override
@@ -67,11 +82,13 @@ public class CaracterScreen extends Screen {
 
         if (isMouseOverButton(mouseX, mouseY, leftButtonX, leftButtonY)) {
             leftArrowPressed = true;
+            CharacterSelectionState.previousRace();
             return true;
         }
 
         if (isMouseOverButton(mouseX, mouseY, rightButtonX, rightButtonY)) {
             rightArrowPressed = true;
+            CharacterSelectionState.nextRace();
             return true;
         }
 

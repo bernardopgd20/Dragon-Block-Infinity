@@ -1,0 +1,11 @@
+package net.dragonblockinfinity.render;
+
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.animatable.GeoEntity;
+
+public class Dinossauro<T extends GeoEntity> extends GeoEntityRenderer<T> {
+    public Dinossauro(Context renderManager) {
+        super(renderManager, new DinossauroModel<>());
+    }
+}
